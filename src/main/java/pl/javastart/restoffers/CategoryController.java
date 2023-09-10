@@ -1,34 +1,37 @@
 package pl.javastart.restoffers;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 public class CategoryController {
-    private final CategoryRepository categoryRepository;
+    private final CategoryService categoryService;
 
-    public CategoryController(CategoryRepository categoryRepository, OfferRepository offerRepository) {
-        this.categoryRepository = categoryRepository;
+    public CategoryController(CategoryService categoryService) {
+        this.categoryService = categoryService;
     }
 
     @GetMapping("/api/categories")
-    private List<Category> getAllCategories() {
-        return categoryRepository.findAll();
+    private List<CategoryDto> getAllCategories() {
+        return categoryService.getAllCategories();
     }
+
     @GetMapping("/api/categories/names")
     private List<String> getCategoriesNames() {
-        List<String> categoriesNames = new ArrayList<>();
-        for(Category category:categoryRepository.findAll()) {
-            categoriesNames.add(category.getName());
-        }
-        return categoriesNames;
+        return categoryService.getCategoriesNames();
+    }
+
+    @GetMapping("/api/categories/{id}")
+    ResponseEntity<CategoryDto> getCagegoryById(@PathVariable Long id) {
+        return categoryService.getCategoryById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("api/categories/{id}")
     private void deleteCategory(@PathVariable Long id) {
-        categoryRepository.deleteById(id);
+        categoryService.deleteCategory(id);
     }
 }
+

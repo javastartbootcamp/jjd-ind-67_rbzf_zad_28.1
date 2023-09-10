@@ -2,45 +2,35 @@ package pl.javastart.restoffers;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-
 import java.util.List;
-import java.util.Optional;
 
 @RestController
-
 public class OfferController {
-    private final OfferRepository offerRepository;
+    private final OfferService offerService;
 
-    public OfferController(OfferRepository offerRepository, CategoryRepository categoryRepository) {
-        this.offerRepository = offerRepository;
+    public OfferController(OfferService offerService) {
+        this.offerService = offerService;
     }
+
     @GetMapping("/api/offers")
-    private List<Offer> getAllOffers() {
-        return offerRepository.findAll();
+    private List<OfferDto> getAllOffers() {
+        return offerService.getAllOffers();
     }
 
     @GetMapping("/api/offers/count")
     private Long countAllOffers() {
-        return offerRepository.count();
+        return offerService.countAllOffers();
     }
 
     @GetMapping("/api/offers/{id}")
-    private Offer getOfferById(@PathVariable Long id) {
-        Optional<Offer> offerOptional = offerRepository.findById(id);
-        return offerOptional.orElseThrow();
-    }
-
-    @PostMapping("/api/offers")
-    public ResponseEntity<Offer> addOffer(@RequestBody Offer offer) {
-        if (offer.getId() != null) {
-            return ResponseEntity.badRequest().build();
-        }
-        offerRepository.save(offer);
-        return ResponseEntity.ok(offer);
+    private ResponseEntity<OfferDto> getOfferById(@PathVariable Long id) {
+        return offerService.getOfferById(id)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @DeleteMapping("/api/offers/{id}")
-    private void deleteOffer(@PathVariable Long id) {
-        offerRepository.deleteById(id);
+    private void deleteOfferDto(@PathVariable Long id) {
+        offerService.deleteOffer(id);
     }
 }

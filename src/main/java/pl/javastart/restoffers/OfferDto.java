@@ -1,26 +1,29 @@
 package pl.javastart.restoffers;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
-import javax.persistence.*;
-
-@Entity
-
-public class Offer {
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class OfferDto {
     private Long id;
     private String title;
     private String description;
     private String imgUrl;
     private double price;
-    @ManyToOne(optional = false)
-    @JoinColumn(name = "category_id")
-    private Category category;
+    private Long categoryId;
+    private String categoryName;
 
 
-    public Offer() {
+    public Long getCategoryId() {
+        return categoryId;
+    }
 
+    public void setCategoryId(Long categoryId) {
+        this.categoryId = categoryId;
+    }
+
+    public String getCategoryName() {
+        return categoryName;
+    }
+
+    public void setCategoryName(String categoryName) {
+        this.categoryName = categoryName;
     }
 
     public Long getId() {
@@ -61,26 +64,6 @@ public class Offer {
 
     public void setPrice(double price) {
         this.price = price;
-    }
-
-    public Category getCategory() {
-        return category;
-    }
-
-    public void setCategory(Category category) {
-        this.category = category;
-    }
-
-    @Override
-    public String toString() {
-        return "Offer{" +
-                "id=" + id +
-                ", title='" + title + '\'' +
-                ", description='" + description + '\'' +
-                ", imgUrl='" + imgUrl + '\'' +
-                ", price=" + price +
-                ", category=" + category +
-                '}';
     }
 
 }
